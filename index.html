@@ -1,190 +1,248 @@
-<html>
-	<head>
-  <!--
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 
-  Amazon S3 Bucket listing.
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="description" content="HTTrack is an easy-to-use website mirror utility. It allows you to download a World Wide website from the Internet to a local directory,building recursively all structures, getting html, images, and other files from the server to your computer. Links are rebuiltrelatively so that you can freely browse to the local site (works with any browser). You can mirror several sites together so that you can jump from one toanother. You can, also, update an existing mirror site, or resume an interrupted download. The robot is fully configurable, with an integrated help" />
+	<meta name="keywords" content="httrack, HTTRACK, HTTrack, winhttrack, WINHTTRACK, WinHTTrack, offline browser, web mirror utility, aspirateur web, surf offline, web capture, www mirror utility, browse offline, local  site builder, website mirroring, aspirateur www, internet grabber, capture de site web, internet tool, hors connexion, unix, dos, windows 95, windows 98, solaris, ibm580, AIX 4.0, HTS, HTGet, web aspirator, web aspirateur, libre, GPL, GNU, free software" />
+	<title>Local index - HTTrack Website Copier</title>
+  <!-- Mirror and index made by HTTrack Website Copier/3.48-21 [XR&CO'2014] -->
+	<style type="text/css">
+	<!--
 
+body {
+	margin: 0;  padding: 0;  margin-bottom: 15px;  margin-top: 8px;
+	background: #77b;
+}
+body, td {
+	font: 14px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+	}
 
-  Copyright (C) 2008 Francesco Pasqualini
+#subTitle {
+	background: #000;  color: #fff;  padding: 4px;  font-weight: bold; 
+	}
 
-      This program is free software: you can redistribute it and/or modify
-      it under the terms of the GNU General Public License as published by
-      the Free Software Foundation, either version 3 of the License, or
-      (at your option) any later version.
+#siteNavigation a, #siteNavigation .current {
+	font-weight: bold;  color: #448;
+	}
+#siteNavigation a:link    { text-decoration: none; }
+#siteNavigation a:visited { text-decoration: none; }
 
-      This program is distributed in the hope that it will be useful,
-      but WITHOUT ANY WARRANTY; without even the implied warranty of
-      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-      GNU General Public License for more details.
+#siteNavigation .current { background-color: #ccd; }
 
-      You should have received a copy of the GNU General Public License
-      along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-  -->
-  <!--
-
-  Modified by Nolan Lawson!  (http://nolanlawson.com).  I'm keeping the spirit of the
-  GPL alive by issuing this with the same license!
-
-  -->
-
-	  <title>Bucket loading...</title>
-	  <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet"/>
-	  <style>
-	    .hide-while-loading {
-	      display:none;
-	    }
-	    .i-expand-collapse {
-	      opacity: 0.3;
-	    }
-	    .i-file-or-folder {
-	      margin-right: 4px;
-	    }
-	  </style>
-
-	  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-	  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.1.2/handlebars.min.js"></script>
-	  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/moment.min.js"></script>
-	</head>
-	<body>
-
-	  <div class="container">
-  	  <h1 id="h1-title">Bucket loading...</h1>
-  	  <table class="hide-while-loading table table-striped">
-  	    <thead>
-  	      <tr>
-  	        <th>Name</th>
-  	        <th>Date Modified</th>
-  	        <th>Size</th>
-  	        <th>Type</th>
-  	      </tr>
-  	    </thead>
-  	    <tbody id="tbody-content">
-  	    </tbody>
-  	  </table>
-	  </div>
-
-  <script id="file-or-folder" type="text/x-handlebars-template">
-    <tr>
-      {{#if isFolder}}
-        <td><i class="icon-chevron-down i-expand-collapse" style="margin-left:calc(({{numLevels}} - 1) * 16px)");></i><i class="icon-folder-open i-file-or-folder" style="margin-left:4px;"></i>
-        {{simpleFilename}}</td>
-      {{else}}
-        <td><i class="icon-file i-file-or-folder"  style="margin-left:calc(({{numLevels}} * 16px) + 4px);"></i>
-        <a href="{{url}}">{{simpleFilename}}</a></td>
-      {{/if}}
-      <td>{{friendlyLastModified}}</td>
-
-      <td>{{friendlySizeName}}</td>
-      <td>{{type}}</td>
-    </tr>
-  </script>
-	<script>
-	(function($){
-	  "use strict";
-	  var FOLDER_PATTERN = new RegExp('_\\$folder\\$$');
-	  var TYPE_PATTERN = new RegExp('\\.([^\\.\\s]{1,10})$');
-		var KB = 1024;
-		var MB = 1000000;
-		var GB = 1000000000;
-
-    // replace last /index.html to get bucket root
-	  var bucketUrl = document.location.href.replace(/\/[^\/]+$/, '');
-		var compiledTemplate;
-
-    // return e.g. 1.2KB, 1.3MB, 2GB, etc.
-	  function toFriendlySizeName(size){
-	    if (size === 0) {
-	      return '';
-	    } else if (size < KB) {
-	      return size + ' B';
-	    } else if (size < MB) {
-	      return (size / KB).toFixed(0) + ' KB';
-	    } else if (size < GB) {
-	      return (size / MB).toFixed(2) + ' MB';
-	    }
-	    return (size / GB).toFixed(2) + ' GB';
-	  }
+#siteNavigation a:hover   { text-decoration: none;  background-color: #fff;  color: #000; }
+#siteNavigation a:active  { text-decoration: none;  background-color: #ccc; }
 
 
-	  // POJO describing a file or a folder
-	  function FileOrFolder(lastModified, etag, size, key){
-	    var self = this;
+a:link    { text-decoration: underline;  color: #00f; }
+a:visited { text-decoration: underline;  color: #000; }
+a:hover   { text-decoration: underline;  color: #c00; }
+a:active  { text-decoration: underline; }
 
-	    self.lastModified = lastModified;
-	    self.etag = etag;
-	    self.size = size;
-	    self.key = key;
+#pageContent {
+	clear: both;
+	border-bottom: 6px solid #000;
+	padding: 10px;  padding-top: 20px;
+	line-height: 1.65em;
+	background-image: url(backblue.gif);
+	background-repeat: no-repeat;
+	background-position: top right;
+	}
 
-	    // init logic
-	    self.isFolder = FOLDER_PATTERN.test(self.key);
-	    self.filename = self.isFolder ? self.key.replace(FOLDER_PATTERN,'') : self.key;
-	    self.url = bucketUrl + '/' + self.key;
-	    self.levels = self.filename.split('/');
-	    self.numLevels = self.levels.length;
-	    self.simpleFilename = self.levels[self.numLevels - 1];
-	    self.friendlySizeName = toFriendlySizeName(parseInt(self.size,10));
-	    var foundTypes = TYPE_PATTERN.exec(self.simpleFilename);
-	    self.type = self.isFolder ? 'Folder ' : (foundTypes ? (foundTypes[1].toUpperCase() + ' file') : 'Unknown');
-	    self.friendlyLastModified = moment(lastModified).format('MMM Do YYYY, hh:mm:ss a');
-	  }
+#pageContent, #siteNavigation {
+	background-color: #ccd;
+	}
 
-		function onAjaxSuccess(xml) {
-			var listBucketResult = $(xml).find('ListBucketResult');
 
-			// set a reasonable title instead of "Bucket loading"
-			var title = 'Index of bucket "' + listBucketResult.find('Name').text() + '"';
-			document.title = title;
-			$('#h1-title').text(title);
+.imgLeft  { float: left;   margin-right: 10px;  margin-bottom: 10px; }
+.imgRight { float: right;  margin-left: 10px;   margin-bottom: 10px; }
 
-			var $tbodyContent = $('#tbody-content');
+hr { height: 1px;  color: #000;  background-color: #000;  margin-bottom: 15px; }
 
-			// create the file or folder objects
+h1 { margin: 0;  font-weight: bold;  font-size: 2em; }
+h2 { margin: 0;  font-weight: bold;  font-size: 1.6em; }
+h3 { margin: 0;  font-weight: bold;  font-size: 1.3em; }
+h4 { margin: 0;  font-weight: bold;  font-size: 1.18em; }
 
-			var filesOrFolders = [];
+.blak { background-color: #000; }
+.hide { display: none; }
+.tableWidth { min-width: 400px; }
 
-			listBucketResult.find('Contents').each(function(idx, element){
+.tblRegular       { border-collapse: collapse; }
+.tblRegular td    { padding: 6px;  background-image: url(fade.gif);  border: 2px solid #99c; }
+.tblHeaderColor, .tblHeaderColor td { background: #99c; }
+.tblNoBorder td   { border: 0; }
 
-				var $element = $(element);
 
-				var fileOrFolder = new FileOrFolder(
-					 $element.find('LastModified').text(),
-					 $element.find('ETag').text(),
-					 $element.find('Size').text(),
-					 $element.find('Key').text()
-				);
+// -->
+</style>
 
-				filesOrFolders.push(fileOrFolder);
-			});
+</head>
 
-			// sort
-			filesOrFolders.sort(function(left, right){
-				if (left.levels === right.levels) {
-					return 0;
-				} else if (left.levels < right.levels) {
-					return -1;
-				}
-				return 1;
-			});
+<table width="76%" border="0" align="center" cellspacing="0" cellpadding="3" class="tableWidth">
+	<tr>
+	<td id="subTitle">HTTrack Website Copier - Open Source offline browser</td>
+	</tr>
+</table>
+<table width="76%" border="0" align="center" cellspacing="0" cellpadding="0" class="tableWidth">
+<tr class="blak">
+<td>
+	<table width="100%" border="0" align="center" cellspacing="1" cellpadding="0">
+	<tr>
+	<td colspan="6"> 
+		<table width="100%" border="0" align="center" cellspacing="0" cellpadding="10">
+		<tr> 
+		<td id="pageContent"> 
+<!-- ==================== End prologue ==================== -->
 
-			// fill in the rows
-			var str = '';
-			for (var i = 0; i < filesOrFolders.length; i ++) {
-				str += compiledTemplate(filesOrFolders[i]);
-			}
-			$tbodyContent.append(str);
-			$('.hide-while-loading').show();
-		}
+	<meta name="generator" content="HTTrack Website Copier/3.x">
+	<TITLE>Local index - HTTrack</TITLE>
 
-		$.ajax({
-         url: bucketUrl,
-         success: onAjaxSuccess
-		});
+<style type="text/css">
+.capbox {
+	background-color: #92D433;
+	border: #B3E272 0px solid;
+	border-width: 0px 12px 0px 0px;
+	display: inline-block;
+	*display: inline; zoom: 1; /* FOR IE7-8 */
+	padding: 8px 40px 8px 8px;
+	}
 
-    // compile while ajax is in progress
-		compiledTemplate = Handlebars.compile($('#file-or-folder').html());
+.capbox-inner {
+	font: bold 11px arial, sans-serif;
+	color: #000000;
+	background-color: #DBF3BA;
+	margin: 5px auto 0px auto;
+	padding: 3px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	}
 
-	})(jQuery);
-	</script>
-	</body>
+#CaptchaDiv {
+	font: bold 17px verdana, arial, sans-serif;
+	font-style: italic;
+	color: #000000;
+	background-color: #FFFFFF;
+	padding: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	}
+
+#CaptchaInput { margin: 1px 0px 1px 0px; width: 135px; }
+
+</style>
+</HEAD>
+<BODY>
+
+<form  onsubmit="return checkform(this);">
+<!-- START CAPTCHA -->
+<br>
+<div class="capbox">
+
+<div id="CaptchaDiv"></div>
+
+<div class="capbox-inner">
+Type the above number:<br>
+
+<input type="hidden" id="txtCaptcha">
+<input type="text" name="CaptchaInput" id="CaptchaInput" size="15"><br>
+
+</div>
+</div>
+<br><br>
+<!-- END CAPTCHA -->
+</form>
+<script type="text/javascript">
+
+// Captcha Script
+
+function checkform(theform){
+var why = "";
+
+if(theform.CaptchaInput.value == ""){
+why += "- Please Enter CAPTCHA Code.\n";
+}
+if(theform.CaptchaInput.value != ""){
+if(ValidCaptcha(theform.CaptchaInput.value) == false){
+why += "- The CAPTCHA Code Does Not Match.\n";
+}
+}
+if(why != ""){
+alert(why);
+return false;
+}
+}
+
+var a = Math.ceil(Math.random() * 9)+ '';
+var b = Math.ceil(Math.random() * 9)+ '';
+var c = Math.ceil(Math.random() * 9)+ '';
+var d = Math.ceil(Math.random() * 9)+ '';
+var e = Math.ceil(Math.random() * 9)+ '';
+
+var code = a + b + c + d + e;
+document.getElementById("txtCaptcha").value = code;
+document.getElementById("CaptchaDiv").innerHTML = code;
+
+// Validate input against the generated number
+function ValidCaptcha(){
+var str1 = removeSpaces(document.getElementById('txtCaptcha').value);
+var str2 = removeSpaces(document.getElementById('CaptchaInput').value);
+if (str1 == str2){
+return true;
+}else{
+return false;
+}
+}
+
+// Remove the spaces from the entered and generated code
+function removeSpaces(string){
+return string.split(' ').join('');
+}
+</script>
+
+<H1 ALIGN=Center>Index of locally available sites:</H1>
+	<TABLE BORDER="0" WIDTH="100%" CELLSPACING="1" CELLPADDING="0">
+		<TR>
+			<TD BACKGROUND="fade.gif">
+				&middot;
+					<A HREF="timesofindia.indiatimes.com/city/mumbai.html">
+						timesofindia.indiatimes.com/city/mumbai.html
+					</A>		
+			</TD>
+		</TR>
+	</TABLE>
+	<BR>
+	<BR>
+	<BR>
+  	<H6 ALIGN="RIGHT">
+	<I>Mirror and index made by HTTrack Website Copier [XR&amp;CO'2008]</I>
+	</H6>
+	<!-- Mirror and index made by HTTrack Website Copier/3.48-21 [XR&CO'2014] -->
+	<!-- Thanks for using HTTrack Website Copier! -->
+	<meta HTTP-EQUIV="Refresh" CONTENT="0; URL=timesofindia.indiatimes.com/city/mumbai.html">
+
+
+<!-- ==================== Start epilogue ==================== -->
+		</td>
+		</tr>
+		</table>
+	</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+
+<table width="76%" border="0" align="center" valign="bottom" cellspacing="0" cellpadding="0">
+	<tr>
+	<td id="footer"><small>&copy; 2008 Xavier Roche & other contributors - Web Design: Leto Kauler.</small></td>
+	</tr>
+</table>
+
+
+</body>
+
 </html>
+
+

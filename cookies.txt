@@ -1,0 +1,5 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+.indiatimes.com	TRUE	/	FALSE	1999999999	_col_uuid	0a4fa58a-5ccb-4473-a02e-f76a1fce25f9-6n3s
+.clmbtech.com	TRUE	/	FALSE	1999999999	_col_uuid	0a4fa58a-5ccb-4473-a02e-f76a1fce25f9-6n3s
+
